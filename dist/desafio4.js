@@ -39,11 +39,18 @@ var requestToken;
 var username;
 var password;
 var sessionId;
+var listId;
 var apiKey;
-var url = 'https://api.themoviedb.org/3';
+var listName;
+var listDescription;
+var accountId;
+// d9556a6ad7841dd5a2a1f88086601086
 var loginButton = document.getElementById('login-button');
+var listaButton = document.getElementById('lista-button');
 var searchButton = document.getElementById('search-button');
 var searchContainer = document.getElementById('search-container');
+var containerMyList = document.getElementById('container-my-list');
+document.getElementById('criar-lista').style.display = 'none';
 loginButton.addEventListener('click', function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -55,6 +62,21 @@ loginButton.addEventListener('click', function () { return __awaiter(void 0, voi
                 _a.sent();
                 return [4 /*yield*/, criarSessao()];
             case 3:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+listaButton.addEventListener('click', function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, criarLista(listName, listDescription).then(function (res) {
+                    if (res.success) {
+                        alert('lista criada!');
+                        listId = res.list_id;
+                    }
+                })];
+            case 1:
                 _a.sent();
                 return [2 /*return*/];
         }
@@ -81,6 +103,7 @@ searchButton.addEventListener('click', function () { return __awaiter(void 0, vo
                     li.appendChild(document.createTextNode(item.original_title));
                     ul.appendChild(li);
                 }
+                console.log(listaDeFilmes);
                 searchContainer.appendChild(ul);
                 return [2 /*return*/];
         }
@@ -94,6 +117,14 @@ function preencherLogin() {
     username = document.getElementById('login').value;
     validateLoginButton();
 }
+function preencherNomeDaLista() {
+    listName = document.getElementById('nome-da-lista').value;
+    validateListaButton();
+}
+function preencherDescricaoDaLista() {
+    listDescription = document.getElementById('descricao-da-lista').value;
+    validateListaButton();
+}
 function preencherApi() {
     apiKey = document.getElementById('api-key').value;
     validateLoginButton();
@@ -104,6 +135,14 @@ function validateLoginButton() {
     }
     else {
         loginButton.disabled = true;
+    }
+}
+function validateListaButton() {
+    if (listName && listDescription) {
+        listaButton.disabled = false;
+    }
+    else {
+        listaButton.disabled = true;
     }
 }
 var HttpClient = /** @class */ (function () {
@@ -153,12 +192,45 @@ function procurarFilme(query) {
                     query = encodeURI(query);
                     console.log(query);
                     return [4 /*yield*/, HttpClient.get({
-                            url: "".concat(url, "/search/movie?api_key=").concat(apiKey, "&query=").concat(query),
+                            url: "https://api.themoviedb.org/3/search/movie?api_key=".concat(apiKey, "&query=").concat(query),
                             method: "GET"
                         })];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result];
+            }
+        });
+    });
+}
+function adicionarFilme(filmeId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, HttpClient.get({
+                        url: "https://api.themoviedb.org/3/movie/".concat(filmeId, "?api_key=").concat(apiKey, "&language=en-US"),
+                        method: "GET"
+                    })];
+                case 1:
+                    result = _a.sent();
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+}
+function getAccount() {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, HttpClient.get({
+                        url: "https://api.themoviedb.org/3/account?api_key=".concat(apiKey, "&session_id=").concat(sessionId),
+                        method: "GET"
+                    })];
+                case 1:
+                    result = _a.sent();
+                    accountId = result.id;
+                    return [2 /*return*/];
             }
         });
     });
@@ -169,7 +241,7 @@ function criarRequestToken() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "".concat(url, "/authentication/token/new?api_key=").concat(apiKey),
+                        url: "https://api.themoviedb.org/3/authentication/token/new?api_key=".concat(apiKey),
                         method: "GET"
                     })];
                 case 1:
@@ -185,7 +257,7 @@ function logar() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "".concat(url, "/authentication/token/validate_with_login?api_key=").concat(apiKey),
+                        url: "https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=".concat(apiKey),
                         method: "POST",
                         body: {
                             username: "".concat(username),
@@ -206,20 +278,99 @@ function criarSessao() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "".concat(url, "/authentication/session/new?api_key=").concat(apiKey, "&request_token=").concat(requestToken),
+                        url: "https://api.themoviedb.org/3/authentication/session/new?api_key=".concat(apiKey, "&request_token=").concat(requestToken),
                         method: "GET"
                     })];
                 case 1:
                     result = _a.sent();
                     sessionId = result.session_id;
                     if (result.success) {
-                        showStatus();
+                        showOptions();
                     }
                     return [2 /*return*/];
             }
         });
     });
 }
-function showStatus() {
-    document.getElementById("status").innerHTML = '• conectado';
+function showOptions() {
+    return __awaiter(this, void 0, void 0, function () {
+        var mylist, ul, _i, _a, item, li;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    document.getElementById("status").innerHTML = '• conectado';
+                    document.getElementById('criar-lista').style.display = 'flex';
+                    return [4 /*yield*/, pegarLista(listId)];
+                case 1:
+                    mylist = _b.sent();
+                    ul = document.createElement('ul');
+                    ul.id = "lista";
+                    for (_i = 0, _a = mylist.results; _i < _a.length; _i++) {
+                        item = _a[_i];
+                        li = document.createElement('li');
+                        li.appendChild(document.createTextNode(item.original_title));
+                        ul.appendChild(li);
+                    }
+                    searchContainer.appendChild(ul);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function criarLista(nomeDaLista, descricao) {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, HttpClient.get({
+                        url: "https://api.themoviedb.org/3/list?api_key=".concat(apiKey, "&session_id=").concat(sessionId),
+                        method: "POST",
+                        body: {
+                            name: nomeDaLista,
+                            description: descricao,
+                            language: "pt-br"
+                        }
+                    })];
+                case 1:
+                    result = _a.sent();
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+}
+function adicionarFilmeNaLista(filmeId, listaId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, HttpClient.get({
+                        url: "https://api.themoviedb.org/3/list/".concat(listaId, "/add_item?api_key=").concat(apiKey, "&session_id=").concat(sessionId),
+                        method: "POST",
+                        body: {
+                            media_id: filmeId
+                        }
+                    })];
+                case 1:
+                    result = _a.sent();
+                    console.log(result);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function pegarLista(listId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, HttpClient.get({
+                        url: "https://api.themoviedb.org/3/list/".concat(listId, "?api_key=").concat(apiKey),
+                        method: "GET"
+                    })];
+                case 1:
+                    result = _a.sent();
+                    return [2 /*return*/, result];
+            }
+        });
+    });
 }

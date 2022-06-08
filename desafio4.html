@@ -4,24 +4,28 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Desafio 4</title>
+    <title>Document</title>
     <script src="dist/desafio4.js" defer></script>
   </head>
 
   <body>
-    <a href="/" rel="noopener noreferrer">voltar</a>
-
     <div style="display: flex;">
-      <div style="display: flex; justify-content: space-between; flex-direction: column; margin-top:20px">
-        <div style="display: flex; width: 300px; height: 120px; justify-content: space-between; flex-direction: column;">
-          <input id="login" placeholder="Login" onchange="preencherLogin(event)">
-          <input id="senha" placeholder="Senha" onchange="preencherSenha(event)">
-          <input id="api-key" placeholder="Api Key" onchange="preencherApi()">
-          <button id="login-button" disabled>Login</button>
-          <span id="status" style="color: green"></span>
-        </div>
+    <div style="display: flex; justify-content: space-between; flex-direction: column;">
+      <div style="display: flex; width: 300px; height: 120px; justify-content: space-between; flex-direction: column;">
+        <input id="login" placeholder="Login" onchange="preencherLogin(event)">
+        <input id="senha" placeholder="Senha" onchange="preencherSenha(event)">
+        <input id="api-key" placeholder="Api Key" onchange="preencherApi()">
+        <button id="login-button" disabled>Login</button>
+        <span id="status" style="color: green"></span>
       </div>
-      <div id="search-container" style="margin: 20px 0 0 20px">
+      <div id="criar-lista" style="display: flex; justify-content: space-between; flex-direction: column; height: 110px; margin-top:20px">
+        <span><strong>Criar Lista</strong></span>
+        <input id="nome-da-lista" placeholder="Nome da lista" onchange="preencherNomeDaLista(event)">
+        <input id="descricao-da-lista" placeholder="Descricao" onchange="preencherDescricaoDaLista(event)">
+        <button id="lista-button" disabled>Criar</button>
+      </div>
+    </div>
+      <div id="search-container" style="margin-left: 20px">
           <input id="search" placeholder="Escreva...">
           <button id="search-button">Pesquisar Filme</button>
       </div>
