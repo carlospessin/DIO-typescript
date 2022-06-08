@@ -16,9 +16,11 @@ let listaButton = document.getElementById('lista-button')! as HTMLInputElement;
 let searchButton = document.getElementById('search-button')! as HTMLInputElement;
 let searchContainer = document.getElementById('search-container')!;
 let containerMyList = document.getElementById('container-my-list')!;
+let containerMovies = document.getElementById('container-movies')!;
 
 document.getElementById('criar-lista')!.style.display = 'none';
 document.getElementById('container-my-list')!.style.display = 'none';
+document.getElementById('container-movies')!.style.display = 'none';
 
 loginButton.addEventListener('click', async () => {
   await criarRequestToken();
@@ -191,18 +193,18 @@ async function showOptions() {
 }
 
 function refresh() {
-  $("#table").load("desafio4.html #table")
+  $("#table").load("desafio4.html #table");
   getMyLists();
+}
+
+function refreshMovies(listaId: any) {
+  $("#list-movies").load("desafio4.html #list-movies");
+  pegarLista(listaId);
 }
 
 async function getMyLists() {
 
   obterListasCriadas(accountId).then((res) => {
-    let myLista = document.getElementById("myLista");
-    if (myLista) {
-      myLista.outerHTML = "";
-    }
-
     var table = document.getElementById('table')!;
     table.style.width = '300px';
     table.setAttribute('id', 'table')
@@ -223,6 +225,22 @@ async function getMyLists() {
 
       for (var j = 0; j < 1; j++) {
         var td = document.createElement('td');
+        td.style.width = "35px";
+        var button = document.createElement('button');
+        button.innerHTML = 'ver';
+        button.onclick = function () {
+          pegarLista(item.id);
+          return false;
+        };
+        td.style.borderBottom = "1px solid lightgray";
+        td.appendChild(button);
+        tr.appendChild(td);
+      }
+
+      for (var j = 0; j < 1; j++) {
+        var td = document.createElement('td');
+        td.style.textAlign = "end";
+        td.style.width = "70px";
         var button = document.createElement('button');
         button.innerHTML = 'remover';
         button.onclick = function () {
@@ -230,10 +248,10 @@ async function getMyLists() {
           return false;
         };
         td.style.borderBottom = "1px solid lightgray";
-        td.style.textAlign = "end";
         td.appendChild(button);
         tr.appendChild(td);
       }
+
     }
     containerMyList.appendChild(table);
   });
@@ -264,12 +282,71 @@ async function adicionarFilmeNaLista(filmeId: any, listaId: any) {
   console.log(result);
 }
 
+async function removerFilmeNaLista(filmeId: any, listaId: any) {
+  let result = await HttpClient.get({
+    url: `${url}/list/${listaId}/remove_item?api_key=${apiKey}&session_id=${sessionId}`,
+    method: "POST",
+    body: {
+      media_id: filmeId
+    }
+  }) as any;
+  if(result.success) {
+    refreshMovies(listaId);
+  }
+}
+
 async function pegarLista(listId: number) {
   let result = await HttpClient.get({
     url: `${url}/list/${listId}?api_key=${apiKey}`,
     method: "GET"
   });
-  return result;
+  if (result) {
+    criarlistaDeFilmes(result)
+  }
+}
+
+async function criarlistaDeFilmes(lista: any) {
+  document.getElementById('container-movies')!.style.display = 'flex';
+
+  const listName = document.getElementById('list-name')!;
+  const listDescription = document.getElementById('list-description')!;
+  listName.innerHTML = lista.name;
+  listDescription.innerHTML = lista.description;
+
+  var table = document.getElementById('list-movies')!;
+  table.style.width = '300px';
+
+  var tableBody = document.createElement('tbody');
+  table.appendChild(tableBody);
+
+  for (const item of lista.items) {
+    var tr = document.createElement('tr');
+    tableBody.appendChild(tr);
+
+    for (var j = 0; j < 1; j++) {
+      var td = document.createElement('td');
+      td.style.borderBottom = "1px solid lightgray";
+      td.appendChild(document.createTextNode(item.title));
+      tr.appendChild(td);
+    }
+
+    for (var j = 0; j < 1; j++) {
+      var td = document.createElement('td');
+      td.style.textAlign = "end";
+      td.style.width = "70px";
+      var button = document.createElement('button');
+      button.innerHTML = 'remover';
+      button.onclick = function () {
+        removerFilmeNaLista(item.id, lista.id);
+        return false;
+      };
+      td.style.borderBottom = "1px solid lightgray";
+      td.appendChild(button);
+      tr.appendChild(td);
+    }
+
+  }
+  containerMovies.appendChild(table);
 }
 
 async function removerLista(listId: number) {

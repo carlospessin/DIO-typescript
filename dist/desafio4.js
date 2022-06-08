@@ -51,8 +51,10 @@ var listaButton = document.getElementById('lista-button');
 var searchButton = document.getElementById('search-button');
 var searchContainer = document.getElementById('search-container');
 var containerMyList = document.getElementById('container-my-list');
+var containerMovies = document.getElementById('container-movies');
 document.getElementById('criar-lista').style.display = 'none';
 document.getElementById('container-my-list').style.display = 'none';
+document.getElementById('container-movies').style.display = 'none';
 loginButton.addEventListener('click', function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -307,14 +309,14 @@ function refresh() {
     $("#table").load("desafio4.html #table");
     getMyLists();
 }
+function refreshMovies(listaId) {
+    $("#list-movies").load("desafio4.html #list-movies");
+    pegarLista(listaId);
+}
 function getMyLists() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             obterListasCriadas(accountId).then(function (res) {
-                var myLista = document.getElementById("myLista");
-                if (myLista) {
-                    myLista.outerHTML = "";
-                }
                 var table = document.getElementById('table');
                 table.style.width = '300px';
                 table.setAttribute('id', 'table');
@@ -331,6 +333,21 @@ function getMyLists() {
                     }
                     for (var j = 0; j < 1; j++) {
                         td = document.createElement('td');
+                        td.style.width = "35px";
+                        button = document.createElement('button');
+                        button.innerHTML = 'ver';
+                        button.onclick = function () {
+                            pegarLista(item.id);
+                            return false;
+                        };
+                        td.style.borderBottom = "1px solid lightgray";
+                        td.appendChild(button);
+                        tr.appendChild(td);
+                    }
+                    for (var j = 0; j < 1; j++) {
+                        td = document.createElement('td');
+                        td.style.textAlign = "end";
+                        td.style.width = "70px";
                         button = document.createElement('button');
                         button.innerHTML = 'remover';
                         button.onclick = function () {
@@ -338,12 +355,11 @@ function getMyLists() {
                             return false;
                         };
                         td.style.borderBottom = "1px solid lightgray";
-                        td.style.textAlign = "end";
                         td.appendChild(button);
                         tr.appendChild(td);
                     }
                 };
-                var tr, td, td, button;
+                var tr, td, td, button, td, button;
                 for (var _i = 0, _a = res.results; _i < _a.length; _i++) {
                     var item = _a[_i];
                     _loop_1(item);
@@ -396,6 +412,28 @@ function adicionarFilmeNaLista(filmeId, listaId) {
         });
     });
 }
+function removerFilmeNaLista(filmeId, listaId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, HttpClient.get({
+                        url: "".concat(url, "/list/").concat(listaId, "/remove_item?api_key=").concat(apiKey, "&session_id=").concat(sessionId),
+                        method: "POST",
+                        body: {
+                            media_id: filmeId
+                        }
+                    })];
+                case 1:
+                    result = _a.sent();
+                    if (result.success) {
+                        refreshMovies(listaId);
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 function pegarLista(listId) {
     return __awaiter(this, void 0, void 0, function () {
         var result;
@@ -407,8 +445,57 @@ function pegarLista(listId) {
                     })];
                 case 1:
                     result = _a.sent();
-                    return [2 /*return*/, result];
+                    if (result) {
+                        criarlistaDeFilmes(result);
+                    }
+                    return [2 /*return*/];
             }
+        });
+    });
+}
+function criarlistaDeFilmes(lista) {
+    return __awaiter(this, void 0, void 0, function () {
+        var listName, listDescription, table, tableBody, _loop_2, tr, td, td, button, _i, _a, item;
+        return __generator(this, function (_b) {
+            document.getElementById('container-movies').style.display = 'flex';
+            listName = document.getElementById('list-name');
+            listDescription = document.getElementById('list-description');
+            listName.innerHTML = lista.name;
+            listDescription.innerHTML = lista.description;
+            table = document.getElementById('list-movies');
+            table.style.width = '300px';
+            tableBody = document.createElement('tbody');
+            table.appendChild(tableBody);
+            _loop_2 = function (item) {
+                tr = document.createElement('tr');
+                tableBody.appendChild(tr);
+                for (var j = 0; j < 1; j++) {
+                    td = document.createElement('td');
+                    td.style.borderBottom = "1px solid lightgray";
+                    td.appendChild(document.createTextNode(item.title));
+                    tr.appendChild(td);
+                }
+                for (var j = 0; j < 1; j++) {
+                    td = document.createElement('td');
+                    td.style.textAlign = "end";
+                    td.style.width = "70px";
+                    button = document.createElement('button');
+                    button.innerHTML = 'remover';
+                    button.onclick = function () {
+                        removerFilmeNaLista(item.id, lista.id);
+                        return false;
+                    };
+                    td.style.borderBottom = "1px solid lightgray";
+                    td.appendChild(button);
+                    tr.appendChild(td);
+                }
+            };
+            for (_i = 0, _a = lista.items; _i < _a.length; _i++) {
+                item = _a[_i];
+                _loop_2(item);
+            }
+            containerMovies.appendChild(table);
+            return [2 /*return*/];
         });
     });
 }

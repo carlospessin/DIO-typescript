@@ -12,8 +12,10 @@ adicionei um index para navegar entre os desafios
 - [x] Mensagem de status ao conectar
 - [x] Criação de Lista
 - [x] Exibição das listas do usuário
+- [x] Remover lista do usuário
+- [x] Exibição dos filmes das listas do usuário
+- [x] Excluir filme das listas do usuário
 - [ ] Adionar filme a lista
-- [ ] Exibição dos filmes das listas do usuário
 - [ ] Manter sessão ativa
 
 ### Instruções
