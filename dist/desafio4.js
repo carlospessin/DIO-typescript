@@ -36,14 +36,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var requestToken;
-var username;
-var password;
+var username = 'carlospessin';
+var password = '1234';
 var sessionId;
 var listId;
-var apiKey;
+var apiKey = 'd9556a6ad7841dd5a2a1f88086601086';
 var listName;
 var listDescription;
 var accountId;
+var url = 'https://api.themoviedb.org/3';
 // d9556a6ad7841dd5a2a1f88086601086
 var loginButton = document.getElementById('login-button');
 var listaButton = document.getElementById('lista-button');
@@ -51,6 +52,7 @@ var searchButton = document.getElementById('search-button');
 var searchContainer = document.getElementById('search-container');
 var containerMyList = document.getElementById('container-my-list');
 document.getElementById('criar-lista').style.display = 'none';
+document.getElementById('container-my-list').style.display = 'none';
 loginButton.addEventListener('click', function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -70,12 +72,7 @@ loginButton.addEventListener('click', function () { return __awaiter(void 0, voi
 listaButton.addEventListener('click', function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, criarLista(listName, listDescription).then(function (res) {
-                    if (res.success) {
-                        alert('lista criada!');
-                        listId = res.list_id;
-                    }
-                })];
+            case 0: return [4 /*yield*/, criarLista(listName, listDescription)];
             case 1:
                 _a.sent();
                 return [2 /*return*/];
@@ -111,23 +108,15 @@ searchButton.addEventListener('click', function () { return __awaiter(void 0, vo
 }); });
 function preencherSenha() {
     password = document.getElementById('senha').value;
-    validateLoginButton();
+    // validateLoginButton();
 }
 function preencherLogin() {
     username = document.getElementById('login').value;
-    validateLoginButton();
-}
-function preencherNomeDaLista() {
-    listName = document.getElementById('nome-da-lista').value;
-    validateListaButton();
-}
-function preencherDescricaoDaLista() {
-    listDescription = document.getElementById('descricao-da-lista').value;
-    validateListaButton();
+    // validateLoginButton();
 }
 function preencherApi() {
     apiKey = document.getElementById('api-key').value;
-    validateLoginButton();
+    // validateLoginButton();
 }
 function validateLoginButton() {
     if (password && username && apiKey) {
@@ -136,6 +125,14 @@ function validateLoginButton() {
     else {
         loginButton.disabled = true;
     }
+}
+function preencherNomeDaLista() {
+    listName = document.getElementById('nome-da-lista').value;
+    validateListaButton();
+}
+function preencherDescricaoDaLista() {
+    listDescription = document.getElementById('descricao-da-lista').value;
+    validateListaButton();
 }
 function validateListaButton() {
     if (listName && listDescription) {
@@ -192,7 +189,7 @@ function procurarFilme(query) {
                     query = encodeURI(query);
                     console.log(query);
                     return [4 /*yield*/, HttpClient.get({
-                            url: "https://api.themoviedb.org/3/search/movie?api_key=".concat(apiKey, "&query=").concat(query),
+                            url: "".concat(url, "/search/movie?api_key=").concat(apiKey, "&query=").concat(query),
                             method: "GET"
                         })];
                 case 1:
@@ -208,7 +205,7 @@ function adicionarFilme(filmeId) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "https://api.themoviedb.org/3/movie/".concat(filmeId, "?api_key=").concat(apiKey, "&language=en-US"),
+                        url: "".concat(url, "/movie/").concat(filmeId, "?api_key=").concat(apiKey, "&language=en-US"),
                         method: "GET"
                     })];
                 case 1:
@@ -224,11 +221,12 @@ function getAccount() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "https://api.themoviedb.org/3/account?api_key=".concat(apiKey, "&session_id=").concat(sessionId),
+                        url: "".concat(url, "/account?api_key=").concat(apiKey, "&session_id=").concat(sessionId),
                         method: "GET"
                     })];
                 case 1:
                     result = _a.sent();
+                    console.log(result);
                     accountId = result.id;
                     return [2 /*return*/];
             }
@@ -241,7 +239,7 @@ function criarRequestToken() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "https://api.themoviedb.org/3/authentication/token/new?api_key=".concat(apiKey),
+                        url: "".concat(url, "/authentication/token/new?api_key=").concat(apiKey),
                         method: "GET"
                     })];
                 case 1:
@@ -257,7 +255,7 @@ function logar() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=".concat(apiKey),
+                        url: "".concat(url, "/authentication/token/validate_with_login?api_key=").concat(apiKey),
                         method: "POST",
                         body: {
                             username: "".concat(username),
@@ -278,12 +276,13 @@ function criarSessao() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "https://api.themoviedb.org/3/authentication/session/new?api_key=".concat(apiKey, "&request_token=").concat(requestToken),
+                        url: "".concat(url, "/authentication/session/new?api_key=").concat(apiKey, "&request_token=").concat(requestToken),
                         method: "GET"
                     })];
                 case 1:
                     result = _a.sent();
                     sessionId = result.session_id;
+                    localStorage.setItem('sessionId', sessionId);
                     if (result.success) {
                         showOptions();
                     }
@@ -294,26 +293,47 @@ function criarSessao() {
 }
 function showOptions() {
     return __awaiter(this, void 0, void 0, function () {
-        var mylist, ul, _i, _a, item, li;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    document.getElementById("status").innerHTML = '• conectado';
-                    document.getElementById('criar-lista').style.display = 'flex';
-                    return [4 /*yield*/, pegarLista(listId)];
-                case 1:
-                    mylist = _b.sent();
-                    ul = document.createElement('ul');
-                    ul.id = "lista";
-                    for (_i = 0, _a = mylist.results; _i < _a.length; _i++) {
-                        item = _a[_i];
-                        li = document.createElement('li');
-                        li.appendChild(document.createTextNode(item.original_title));
-                        ul.appendChild(li);
+        return __generator(this, function (_a) {
+            document.getElementById("status").innerHTML = '• conectado';
+            document.getElementById('criar-lista').style.display = 'flex';
+            document.getElementById('container-my-list').style.display = 'block';
+            getAccount();
+            getMyLists();
+            return [2 /*return*/];
+        });
+    });
+}
+function refresh() {
+    $("#table").load("desafio4.html #table");
+    getMyLists();
+}
+function getMyLists() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            obterListasCriadas(accountId).then(function (res) {
+                var myLista = document.getElementById("myLista");
+                if (myLista) {
+                    myLista.outerHTML = "";
+                }
+                var table = document.getElementById('table');
+                table.style.width = '300px';
+                table.setAttribute('id', 'table');
+                var tableBody = document.createElement('tbody');
+                table.appendChild(tableBody);
+                for (var _i = 0, _a = res.results; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    var tr = document.createElement('tr');
+                    tableBody.appendChild(tr);
+                    for (var j = 0; j < 1; j++) {
+                        var td = document.createElement('td');
+                        td.style.borderBottom = "1px solid lightgray";
+                        td.appendChild(document.createTextNode(item.name));
+                        tr.appendChild(td);
                     }
-                    searchContainer.appendChild(ul);
-                    return [2 /*return*/];
-            }
+                }
+                containerMyList.appendChild(table);
+            });
+            return [2 /*return*/];
         });
     });
 }
@@ -323,7 +343,7 @@ function criarLista(nomeDaLista, descricao) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "https://api.themoviedb.org/3/list?api_key=".concat(apiKey, "&session_id=").concat(sessionId),
+                        url: "".concat(url, "/list?api_key=").concat(apiKey, "&session_id=").concat(sessionId),
                         method: "POST",
                         body: {
                             name: nomeDaLista,
@@ -333,6 +353,7 @@ function criarLista(nomeDaLista, descricao) {
                     })];
                 case 1:
                     result = _a.sent();
+                    refresh();
                     return [2 /*return*/, result];
             }
         });
@@ -344,7 +365,7 @@ function adicionarFilmeNaLista(filmeId, listaId) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "https://api.themoviedb.org/3/list/".concat(listaId, "/add_item?api_key=").concat(apiKey, "&session_id=").concat(sessionId),
+                        url: "".concat(url, "/list/").concat(listaId, "/add_item?api_key=").concat(apiKey, "&session_id=").concat(sessionId),
                         method: "POST",
                         body: {
                             media_id: filmeId
@@ -364,7 +385,23 @@ function pegarLista(listId) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, HttpClient.get({
-                        url: "https://api.themoviedb.org/3/list/".concat(listId, "?api_key=").concat(apiKey),
+                        url: "".concat(url, "/list/").concat(listId, "?api_key=").concat(apiKey),
+                        method: "GET"
+                    })];
+                case 1:
+                    result = _a.sent();
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+}
+function obterListasCriadas(accountId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, HttpClient.get({
+                        url: "".concat(url, "/account/").concat(accountId, "/lists?api_key=").concat(apiKey, "&session_id=").concat(sessionId, "&page=1"),
                         method: "GET"
                     })];
                 case 1:

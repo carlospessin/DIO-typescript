@@ -11,9 +11,10 @@ adicionei um index para navegar entre os desafios
 ### Implementações Desafio 4
 - [x] Mensagem de status ao conectar
 - [x] Criação de Lista
-- [ ] Exibição das listas do usuário
+- [x] Exibição das listas do usuário
 - [ ] Exibição dos filmes das listas do usuário
 - [ ] Adionar filme a lista
+- [ ] Manter sessão ativa
 
 ### Instruções
 Faça clone do repo e execute:  
