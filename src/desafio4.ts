@@ -190,7 +190,7 @@ async function showOptions() {
 
 }
 
-function refresh(){
+function refresh() {
   $("#table").load("desafio4.html #table")
   getMyLists();
 }
@@ -216,8 +216,22 @@ async function getMyLists() {
 
       for (var j = 0; j < 1; j++) {
         var td = document.createElement('td');
-        td.style.borderBottom="1px solid lightgray";
+        td.style.borderBottom = "1px solid lightgray";
         td.appendChild(document.createTextNode(item.name));
+        tr.appendChild(td);
+      }
+
+      for (var j = 0; j < 1; j++) {
+        var td = document.createElement('td');
+        var button = document.createElement('button');
+        button.innerHTML = 'remover';
+        button.onclick = function () {
+          removerLista(item.id);
+          return false;
+        };
+        td.style.borderBottom = "1px solid lightgray";
+        td.style.textAlign = "end";
+        td.appendChild(button);
         tr.appendChild(td);
       }
     }
@@ -256,6 +270,16 @@ async function pegarLista(listId: number) {
     method: "GET"
   });
   return result;
+}
+
+async function removerLista(listId: number) {
+  await HttpClient.get({
+    url: `${url}/list/${listId}?api_key=${apiKey}&session_id=${sessionId}`,
+    method: "DELETE"
+  }).catch(() => {
+    refresh();
+  }
+  )
 }
 
 async function obterListasCriadas(accountId: number) {

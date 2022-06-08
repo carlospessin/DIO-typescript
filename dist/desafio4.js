@@ -320,16 +320,33 @@ function getMyLists() {
                 table.setAttribute('id', 'table');
                 var tableBody = document.createElement('tbody');
                 table.appendChild(tableBody);
-                for (var _i = 0, _a = res.results; _i < _a.length; _i++) {
-                    var item = _a[_i];
-                    var tr = document.createElement('tr');
+                var _loop_1 = function (item) {
+                    tr = document.createElement('tr');
                     tableBody.appendChild(tr);
                     for (var j = 0; j < 1; j++) {
-                        var td = document.createElement('td');
+                        td = document.createElement('td');
                         td.style.borderBottom = "1px solid lightgray";
                         td.appendChild(document.createTextNode(item.name));
                         tr.appendChild(td);
                     }
+                    for (var j = 0; j < 1; j++) {
+                        td = document.createElement('td');
+                        button = document.createElement('button');
+                        button.innerHTML = 'remover';
+                        button.onclick = function () {
+                            removerLista(item.id);
+                            return false;
+                        };
+                        td.style.borderBottom = "1px solid lightgray";
+                        td.style.textAlign = "end";
+                        td.appendChild(button);
+                        tr.appendChild(td);
+                    }
+                };
+                var tr, td, td, button;
+                for (var _i = 0, _a = res.results; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    _loop_1(item);
                 }
                 containerMyList.appendChild(table);
             });
@@ -391,6 +408,23 @@ function pegarLista(listId) {
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result];
+            }
+        });
+    });
+}
+function removerLista(listId) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, HttpClient.get({
+                        url: "".concat(url, "/list/").concat(listId, "?api_key=").concat(apiKey, "&session_id=").concat(sessionId),
+                        method: "DELETE"
+                    }).catch(function () {
+                        refresh();
+                    })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
             }
         });
     });

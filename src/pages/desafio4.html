@@ -13,7 +13,7 @@
 <body>
   <div style="display: flex;">
     <div style="display: flex; justify-content: space-between; flex-direction: column;">
-      <div style="display: flex; width: 300px; height: 120px; justify-content: space-between; flex-direction: column;">
+      <div style="display: flex; width: 300px; height: 120px; justify-content: space-between; flex-direction: column; border: 1px solid grey; padding: 10px;">
         <input id="login" placeholder="Login" onchange="preencherLogin(event)">
         <input id="senha" placeholder="Senha" onchange="preencherSenha(event)">
         <input id="api-key" placeholder="Api Key" onchange="preencherApi()">
@@ -21,13 +21,13 @@
         <span id="status" style="color: green"></span>
       </div>
       <div id="criar-lista"
-        style="display: flex; justify-content: space-between; flex-direction: column; height: 110px; margin-top:20px">
+        style="display: flex; justify-content: space-between; flex-direction: column; height: 110px; margin-top:20px; border: 1px solid grey; padding: 10px;">
         <span><strong>Criar Lista</strong></span>
         <input id="nome-da-lista" placeholder="Nome da lista" onchange="preencherNomeDaLista(event)">
         <input id="descricao-da-lista" placeholder="Descricao" onchange="preencherDescricaoDaLista(event)">
         <button id="lista-button" disabled>Criar</button>
       </div>
-      <div id="container-my-list" style="margin-top:20px">
+      <div id="container-my-list" style="margin-top:20px; border: 1px solid grey; padding: 10px;">
         <span><strong>Minhas Listas</strong></span>
         <table id="table"></table>
       </div>
