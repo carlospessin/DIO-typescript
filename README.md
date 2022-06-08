@@ -8,16 +8,15 @@ Repositório criado para resolver os [desafios](https://github.com/lira1705/ment
 removi algumas requisições que não estavam sendo utilizadas para limpar o código. Vou atualizando conforme implemento novas funcionalidades.
 adicionei um index para navegar entre os desafios
 
-####Implementações
+### Implementações Desafio 4
 - [x] Mensagem de status ao conectar
 - [ ] Criação de Lista
 - [ ] Exibição das listas do usuário
 - [ ] Exibição dos filmes das listas do usuário
 - [ ] Adionar filme a lista
 
-####Instruções
-Faça clone do repo
-execute: 
-``npm init``
-``npm run watch``
+### Instruções
+Faça clone do repo e execute:  
+``npm init``  
+``npm run watch``  
 ``npm start``
