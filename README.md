@@ -15,7 +15,7 @@ adicionei um index para navegar entre os desafios
 - [x] Remover lista do usuário
 - [x] Exibição dos filmes das listas do usuário
 - [x] Excluir filme das listas do usuário
-- [ ] Adionar filme a lista
+- [x] Adionar filme a lista
 - [ ] Manter sessão ativa
 
 ### Instruções

@@ -32,7 +32,15 @@
         <table id="table"></table>
       </div>
       <div id="container-movies" style="margin-top:20px; border: 1px solid grey; padding: 10px; display: flex; flex-direction: column;">
-        <span><strong id="list-name"></strong></span>
+        <div style="display: flex;justify-content: space-between;">
+        <span>
+            <strong id="list-name"></strong>
+        </span>
+        <span>
+            <input id="id-filme" type="text" style="width: 50px;" placeholder="id filme" onchange="preencherIdFilme(event)">
+            <button id="button-filme" disabled>add</button>
+        </span>
+    </div>
         <span id="list-description"></span>
         <table id="list-movies"></table>
       </div>

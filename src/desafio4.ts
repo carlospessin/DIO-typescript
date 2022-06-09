@@ -6,6 +6,7 @@ let listId: number;
 let apiKey = 'd9556a6ad7841dd5a2a1f88086601086';
 let listName: string;
 let listDescription: string;
+let idFilme: string;
 let accountId: number;
 let url = 'https://api.themoviedb.org/3';
 
@@ -13,6 +14,7 @@ let url = 'https://api.themoviedb.org/3';
 
 let loginButton = document.getElementById('login-button') as HTMLInputElement;
 let listaButton = document.getElementById('lista-button') as HTMLInputElement;
+let filmeButton = document.getElementById('button-filme') as HTMLInputElement;
 let searchButton = document.getElementById('search-button') as HTMLInputElement;
 let searchContainer = document.getElementById('search-container')!;
 let containerMyList = document.getElementById('container-my-list')!;
@@ -30,6 +32,12 @@ loginButton.addEventListener('click', async () => {
 
 listaButton.addEventListener('click', async () => {
   await criarLista(listName, listDescription);
+})
+
+filmeButton.addEventListener('click', async () => {
+  var el = document.getElementById("list-name")!;
+  var listId = el.getAttribute("data");
+  adicionarFilmeNaLista(idFilme, listId);
 })
 
 searchButton.addEventListener('click', async () => {
@@ -90,6 +98,19 @@ function validateListaButton() {
   }
 }
 
+function preencherIdFilme() {
+  idFilme = (document.getElementById('id-filme') as HTMLInputElement).value;
+  validateAddFilme();
+}
+
+function validateAddFilme() {
+  if (idFilme) {
+    filmeButton.disabled = false;
+  } else {
+    filmeButton.disabled = true;
+  }
+}
+
 class HttpClient {
   static async get({ url, method, body = null }: { url: string, method: any, body?: any }) {
     return new Promise((resolve, reject) => {
@@ -129,14 +150,6 @@ async function procurarFilme(query: any) {
     method: "GET"
   })
   return result
-}
-
-async function adicionarFilme(filmeId: string) {
-  let result = await HttpClient.get({
-    url: `${url}/movie/${filmeId}?api_key=${apiKey}&language=en-US`,
-    method: "GET"
-  })
-  return result;
 }
 
 async function getAccount() {
@@ -186,7 +199,6 @@ async function showOptions() {
 
   getAccount();
   getMyLists();
-
 }
 
 function refresh() {
@@ -202,14 +214,14 @@ function refreshMovies(listaId: any) {
 async function getMyLists() {
 
   obterListasCriadas(accountId).then((res) => {
-    if(res.results.length == 0) {
+    if (res.results.length == 0) {
       let p = document.createElement('p');
       p.appendChild(document.createTextNode('nenhuma lista criada'));
       p.setAttribute('id', 'noList')
       containerMyList.appendChild(p);
     } else {
       var noList = document.getElementById('noList');
-      if(res.results.length > 0 && noList != null) {
+      if (res.results.length > 0 && noList != null) {
         noList.style.display = "none"
       }
     }
@@ -237,6 +249,7 @@ async function getMyLists() {
         var button = document.createElement('button');
         button.innerHTML = 'ver';
         button.onclick = function () {
+          $("#list-movies").load("desafio4.html #list-movies");
           pegarLista(item.id);
           return false;
         };
@@ -287,8 +300,10 @@ async function adicionarFilmeNaLista(filmeId: any, listaId: any) {
     body: {
       media_id: filmeId
     }
-  })
-  console.log(result);
+  }) as any;
+  if (result.success) {
+    refreshMovies(listaId);
+  }
 }
 
 async function removerFilmeNaLista(filmeId: any, listaId: any) {
@@ -299,7 +314,7 @@ async function removerFilmeNaLista(filmeId: any, listaId: any) {
       media_id: filmeId
     }
   }) as any;
-  if(result.success) {
+  if (result.success) {
     refreshMovies(listaId);
   }
 }
@@ -319,22 +334,24 @@ async function criarlistaDeFilmes(lista: any) {
 
   const listName = document.getElementById('list-name')!;
   const listDescription = document.getElementById('list-description')!;
+  listName.setAttribute('data', lista.id)
   listName.innerHTML = lista.name;
   listDescription.innerHTML = lista.description;
 
+  var noMovie = document.getElementById('noMovie');
   console.log(lista.items.length)
-
-  if(lista.items.length == 0) {
+  console.log(noMovie == null)
+  if (lista.items.length == 0 && noMovie == null) {
+    console.log('entrou no primeiro')
     let p = document.createElement('p');
     p.appendChild(document.createTextNode('Nenhum filme encontrado'));
     p.setAttribute('id', 'noMovie')
     containerMovies.appendChild(p);
-  } else {
-    var noMovie = document.getElementById('noMovie');
-    if(lista.items.length > 0 && noMovie != null) {
-      noMovie.style.display = "none"
-    }
-  }
+  } else if (lista.items.length > 0 && noMovie != null) {
+    console.log('entrou no segundo')
+    $("#noMovie").remove();
+
+  } 
 
   var table = document.getElementById('list-movies')!;
   table.style.width = '300px';
