@@ -11,9 +11,9 @@ let url = 'https://api.themoviedb.org/3';
 
 // d9556a6ad7841dd5a2a1f88086601086
 
-let loginButton = document.getElementById('login-button')! as HTMLInputElement;
-let listaButton = document.getElementById('lista-button')! as HTMLInputElement;
-let searchButton = document.getElementById('search-button')! as HTMLInputElement;
+let loginButton = document.getElementById('login-button') as HTMLInputElement;
+let listaButton = document.getElementById('lista-button') as HTMLInputElement;
+let searchButton = document.getElementById('search-button') as HTMLInputElement;
 let searchContainer = document.getElementById('search-container')!;
 let containerMyList = document.getElementById('container-my-list')!;
 let containerMovies = document.getElementById('container-movies')!;
@@ -43,10 +43,9 @@ searchButton.addEventListener('click', async () => {
   ul.id = "lista"
   for (const item of listaDeFilmes.results) {
     let li = document.createElement('li');
-    li.appendChild(document.createTextNode(item.original_title))
+    li.appendChild(document.createTextNode(item.id + ' - ' + item.original_title))
     ul.appendChild(li)
   }
-  console.log(listaDeFilmes);
   searchContainer.appendChild(ul);
 })
 
@@ -125,7 +124,6 @@ class HttpClient {
 
 async function procurarFilme(query: any) {
   query = encodeURI(query)
-  console.log(query)
   let result = await HttpClient.get({
     url: `${url}/search/movie?api_key=${apiKey}&query=${query}`,
     method: "GET"
@@ -146,7 +144,6 @@ async function getAccount() {
     url: `${url}/account?api_key=${apiKey}&session_id=${sessionId}`,
     method: "GET"
   }) as any;
-  console.log(result);
   accountId = result.id;
 }
 
@@ -205,6 +202,17 @@ function refreshMovies(listaId: any) {
 async function getMyLists() {
 
   obterListasCriadas(accountId).then((res) => {
+    if(res.results.length == 0) {
+      let p = document.createElement('p');
+      p.appendChild(document.createTextNode('nenhuma lista criada'));
+      p.setAttribute('id', 'noList')
+      containerMyList.appendChild(p);
+    } else {
+      var noList = document.getElementById('noList');
+      if(res.results.length > 0 && noList != null) {
+        noList.style.display = "none"
+      }
+    }
     var table = document.getElementById('table')!;
     table.style.width = '300px';
     table.setAttribute('id', 'table')
@@ -267,6 +275,7 @@ async function criarLista(nomeDaLista: any, descricao: any) {
       language: "pt-br"
     }
   }) as any;
+
   refresh();
   return result;
 }
@@ -312,6 +321,20 @@ async function criarlistaDeFilmes(lista: any) {
   const listDescription = document.getElementById('list-description')!;
   listName.innerHTML = lista.name;
   listDescription.innerHTML = lista.description;
+
+  console.log(lista.items.length)
+
+  if(lista.items.length == 0) {
+    let p = document.createElement('p');
+    p.appendChild(document.createTextNode('Nenhum filme encontrado'));
+    p.setAttribute('id', 'noMovie')
+    containerMovies.appendChild(p);
+  } else {
+    var noMovie = document.getElementById('noMovie');
+    if(lista.items.length > 0 && noMovie != null) {
+      noMovie.style.display = "none"
+    }
+  }
 
   var table = document.getElementById('list-movies')!;
   table.style.width = '300px';

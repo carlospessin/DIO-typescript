@@ -99,10 +99,9 @@ searchButton.addEventListener('click', function () { return __awaiter(void 0, vo
                 for (_i = 0, _a = listaDeFilmes.results; _i < _a.length; _i++) {
                     item = _a[_i];
                     li = document.createElement('li');
-                    li.appendChild(document.createTextNode(item.original_title));
+                    li.appendChild(document.createTextNode(item.id + ' - ' + item.original_title));
                     ul.appendChild(li);
                 }
-                console.log(listaDeFilmes);
                 searchContainer.appendChild(ul);
                 return [2 /*return*/];
         }
@@ -189,7 +188,6 @@ function procurarFilme(query) {
             switch (_a.label) {
                 case 0:
                     query = encodeURI(query);
-                    console.log(query);
                     return [4 /*yield*/, HttpClient.get({
                             url: "".concat(url, "/search/movie?api_key=").concat(apiKey, "&query=").concat(query),
                             method: "GET"
@@ -228,7 +226,6 @@ function getAccount() {
                     })];
                 case 1:
                     result = _a.sent();
-                    console.log(result);
                     accountId = result.id;
                     return [2 /*return*/];
             }
@@ -317,6 +314,18 @@ function getMyLists() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             obterListasCriadas(accountId).then(function (res) {
+                if (res.results.length == 0) {
+                    var p = document.createElement('p');
+                    p.appendChild(document.createTextNode('nenhuma lista criada'));
+                    p.setAttribute('id', 'noList');
+                    containerMyList.appendChild(p);
+                }
+                else {
+                    var noList = document.getElementById('noList');
+                    if (res.results.length > 0 && noList != null) {
+                        noList.style.display = "none";
+                    }
+                }
                 var table = document.getElementById('table');
                 table.style.width = '300px';
                 table.setAttribute('id', 'table');
@@ -455,13 +464,26 @@ function pegarLista(listId) {
 }
 function criarlistaDeFilmes(lista) {
     return __awaiter(this, void 0, void 0, function () {
-        var listName, listDescription, table, tableBody, _loop_2, tr, td, td, button, _i, _a, item;
+        var listName, listDescription, p, noMovie, table, tableBody, _loop_2, tr, td, td, button, _i, _a, item;
         return __generator(this, function (_b) {
             document.getElementById('container-movies').style.display = 'flex';
             listName = document.getElementById('list-name');
             listDescription = document.getElementById('list-description');
             listName.innerHTML = lista.name;
             listDescription.innerHTML = lista.description;
+            console.log(lista.items.length);
+            if (lista.items.length == 0) {
+                p = document.createElement('p');
+                p.appendChild(document.createTextNode('Nenhum filme encontrado'));
+                p.setAttribute('id', 'noMovie');
+                containerMovies.appendChild(p);
+            }
+            else {
+                noMovie = document.getElementById('noMovie');
+                if (lista.items.length > 0 && noMovie != null) {
+                    noMovie.style.display = "none";
+                }
+            }
             table = document.getElementById('list-movies');
             table.style.width = '300px';
             tableBody = document.createElement('tbody');
